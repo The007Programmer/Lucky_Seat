@@ -1,7 +1,7 @@
 import json as J
 import random as R
 
-class SeatPicker:
+class LuckySeat:
     
     def __init__(self):
         pass
@@ -57,7 +57,7 @@ class SeatPicker:
             self.per_table = per_table
         except ValueError:
             print('\nPlease make sure your value is a number!\n...Rerunning')
-            self.period_num_getter()
+            self.seat_no_exists()
         # better use of the per_table
         self.assert__(self.tables and self.per_table in [1,2,3,4,5,6,7], '\nPlease make sure your period number is between 1 to 7!`\n...Rerunning\n', self.seat_no_exists)
 
@@ -72,10 +72,16 @@ class SeatPicker:
             returnlist.append(R.randint(tick, tick+(self.per_table-1)))
             tick+=self.per_table
         
-        print(f"\n{returnlist}\n")
+        print(f"\n{returnlist}")
 
+    def save_config(self):
 
+        try:
+            ask_save_config = input("\nSave configuration? (y/n):    ").lower()
+            ask_period_num = int(input("\nPeriod number to assign to?    "))
 
+        except ValueError:
+            self.assert__(ask_save_config in ['y','n'] and (ask_period_num in [1,2,3,4,5,6,7]), '\nPlease enter either `y` or `n`\n...Rerunning\n', self.save_config)
 
     def read_write(self):
         with open("periods.json", 'r') as jsonfile:
@@ -92,45 +98,16 @@ class SeatPicker:
             
             self.seat_no_exists()
             self.randomly_select()
+            self.save_config()
 
 
 
-seat = SeatPicker()
-seat.main()
+if __name__ == '__main__':
+    lucky = LuckySeat()
+    lucky.main()
 
 
 # def run():
-#     q1 = input("Use seating chart of existing period? (y/n):    ").lower()
-#     # q5 = input("Enter missing student numbers, press ENTER if none:  ")
-
-#             elif q1 == 'n':
-
-#                 def q1_n():
-#                     try:
-
-#                         q2 = input("# of Tables?    ")
-                        
-
-#                         assert type(q2) == int
-#                         global unsaved_tables
-#                         unsaved_tables = int(q2)
-                        
-#                         returnlist_n = []
-#                         tick = 1
-#                         while tick <= unsaved_tables*4:
-#                             returnlist_n.append(R.randint(tick, tick+3))
-#                             tick+=4
-                        
-#                     except ValueError:
-#                         print(f"Must be a number of tables!!\n\n ...rerunning\n")
-#                         q1_n()
-
-#                     except AssertionError:
-#                         pass
-
-#                     print(returnlist_n)
-
-#                 q1_n()
 #                 def default():
 #                     q3 = input("Save as default? (y/n):    ")
 
