@@ -1,4 +1,4 @@
-# Seat_Picker
+# Lucky_Seat
 
 ## Description
 - This project was created to assist computer science teachers in efficiently selecting a random student from each table during class activities. The tool streamlines the process, saving time and reducing any potential bias in student selection.
