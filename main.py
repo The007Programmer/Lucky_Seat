@@ -4,7 +4,7 @@ import random as R
 class LuckySeat:
     
     def __init__(self):
-        pass
+        self.file = 'periods.json'
 
     # Is _custom_builtin_ a good naming convention??
     def assert__(self, condition, error, func): #success = None#):
@@ -35,10 +35,10 @@ class LuckySeat:
             period_number = int(input("\nPeriod # (number input):    "))
             
             self.period_number = period_number
-            self.read_write()
+            self.read_m()
 
-            self.tables = self.periods_dict_r[self.period_number-1]["tables"]
-            self.per_table = self.periods_dict_r[self.period_number-1]["per_table"]
+            self.tables = self.periods_dict[self.period_number-1]["tables"]
+            self.per_table = self.periods_dict[self.period_number-1]["per_table"]
         except ValueError:
             print('\nPlease make sure your value is a number!\n...Rerunning')
             self.seat_exists()
@@ -74,19 +74,66 @@ class LuckySeat:
         
         print(f"\n{returnlist}")
 
-    def save_config(self):
 
+    def read_m(self):
+        with open(self.file, 'r') as jsonfile:
+            self.periods_dict = J.load(jsonfile)
+
+    def write_m(self):
+        with open(self.file, 'w') as jsonfile2:
+            J.dump(self.periods_dict, jsonfile2)
+
+    # def save_config(self):
+
+    #     try:
+    #         ask_save_config = input("\nSave configuration? (y/n):    ").lower()
+
+    #         if ask_save_config == 'n':
+    #             exit()
+    #         else:
+    #             self.write_m()
+            
+    #         ask_period_num = int(input("\nPeriod number to assign to?    "))
+            
+            
+    #     except ValueError:
+    #         self.assert__(ask_save_config in ['y','n'] and (ask_period_num in [1,2,3,4,5,6,7]), '\nPlease enter either `y` or `n`\n...Rerunning\n', self.save_config)
+
+    def save_config(self):
         try:
             ask_save_config = input("\nSave configuration? (y/n):    ").lower()
-            ask_period_num = int(input("\nPeriod number to assign to?    "))
+
+            if ask_save_config not in ['y', 'n']:
+                print("Invalid input! Please enter `y` or `n`.")
+                self.save_config()  # Retry if invalid input
+
+            if ask_save_config == 'n':
+                exit()
+
+            # Read period number and validate
+            ask_period_num = input("\nPeriod number to assign to?    ")
+
+            if not ask_period_num.isdigit():
+                print("Please make sure your input is a number!")
+                self.save_config()  # Retry if invalid input
+
+            ask_period_num = int(ask_period_num)
+
+            if ask_period_num not in [1, 2, 3, 4, 5, 6, 7]:
+                print("Invalid period number! It should be between 1 and 7.")
+                self.save_config()  # Retry if invalid input
+
+            # If all inputs are valid, proceed with saving
+            self.periods_dict[ask_period_num - 1] = {"tables": self.tables, "per_table": self.per_table}
+            self.write_m()
+            print(f"Configuration saved for period {ask_period_num}.")
 
         except ValueError:
-            self.assert__(ask_save_config in ['y','n'] and (ask_period_num in [1,2,3,4,5,6,7]), '\nPlease enter either `y` or `n`\n...Rerunning\n', self.save_config)
+            print("Invalid input! Please make sure your input is a number.")
+            self.save_config()  # Retry if invalid input
 
-    def read_write(self):
-        with open("periods.json", 'r') as jsonfile:
-            self.periods_dict_r = J.load(jsonfile)
 
+        
     def main(self):
 
         if self.does_seat_exist() == 'y':
@@ -100,60 +147,6 @@ class LuckySeat:
             self.randomly_select()
             self.save_config()
 
-
-
 if __name__ == '__main__':
     lucky = LuckySeat()
     lucky.main()
-
-
-# def run():
-#                 def default():
-#                     q3 = input("Save as default? (y/n):    ")
-
-#                     try:
-#                         assert q3 in ['y', 'n']
-#                         if q3 == 'y':
-
-#                             def q3_y():
-#                                 q4 = input("Period number to assign to?    ")
-#                                 try:
-#                                     assert int(q4) in [1, 2, 3, 4, 5, 6, 7]
-                                    
-#                                     with open("periods.json", 'r') as jsonfile:
-#                                         pd_dict = J.load(jsonfile)
-
-#                                     pd_dict[int(q4)-1]['tables'] = unsaved_tables
-                                    
-#                                     with open('periods.json', 'w') as jsonfile2:
-#                                         J.dump(pd_dict,jsonfile2)
-                                    
-#                                     print(f"Saved new tables config to period {int(q4)}.")
-#                                     exit()
-
-                                    
-
-
-#                                 except AssertionError:
-#                                     print("Not a valid period number!!\n\n ...rerunning\n")
-#                                     q1_n()
-
-#                             q3_y()
-
-#                         elif q3 == 'n':
-#                             print("Not saved new tables as default for any period...")
-#                             exit()
-
-#                     except AssertionError:
-#                         print("Enter vaid input!\n\n ...rerunning\n")
-#                         default()
-#                 default()
-
-#         except AssertionError:
-#             print("Enter vaid input!\n\n ...rerunning\n")
-#             run()
-#     thing()
-
-# run()
-
-
