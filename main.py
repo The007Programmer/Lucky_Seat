@@ -33,7 +33,12 @@ class SeatPicker:
         '''
         try:
             period_number = int(input("\nPeriod # (number input):    "))
+            
             self.period_number = period_number
+            self.read_write()
+
+            self.tables = self.periods_dict_r[self.period_number-1]["tables"]
+            self.per_table = self.periods_dict_r[self.period_number-1]["per_table"]
         except ValueError:
             print('\nPlease make sure your value is a number!\n...Rerunning')
             self.seat_exists()
@@ -54,34 +59,39 @@ class SeatPicker:
             print('\nPlease make sure your value is a number!\n...Rerunning')
             self.period_num_getter()
         # better use of the per_table
-        self.assert__(self.period_number and self.per_table in [1,2,3,4,5,6,7], '\nPlease make sure your period number is between 1 to 7!`\n...Rerunning\n', self.seat_exists)
+        self.assert__(self.tables and self.per_table in [1,2,3,4,5,6,7], '\nPlease make sure your period number is between 1 to 7!`\n...Rerunning\n', self.seat_no_exists)
 
     def randomly_select(self):
         
         returnlist = []
         tick = 1
         # Period number:tables*4 (all students)
-        while tick <= self.periods_dict[self.period_number-1]["tables"]*4:
-            returnlist.append(R.randint(tick, tick+3))
-            tick+=4
+
+        # this part is a bit confusing uh ill work on it
+        while tick <= self.tables*self.per_table:
+            returnlist.append(R.randint(tick, tick+(self.per_table-1)))
+            tick+=self.per_table
         
         print(f"\n{returnlist}\n")
 
-        exit()
-    
+
+
+
+    def read_write(self):
+        with open("periods.json", 'r') as jsonfile:
+            self.periods_dict_r = J.load(jsonfile)
 
     def main(self):
 
         if self.does_seat_exist() == 'y':
 
             self.seat_exists()
-            with open("periods.json", 'r') as jsonfile:
-                self.periods_dict = J.load(jsonfile)
             self.randomly_select()
             
         else:
-            pass
             
+            self.seat_no_exists()
+            self.randomly_select()
 
 
 
