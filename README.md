@@ -18,7 +18,7 @@
 ##  Usage
 
 ### TAR
-- Download the code folder from the most recent stable release (as of current it is [Release 1]()).
+- Download the code folder from the most recent stable release (as of current it is [Release 1](https://github.com/The007Programmer/Lucky_Seat/releases/tag/v0.2)).
 - Extract the folder into the intended running directory (as of current; `Downloads` is reccomended).
 - Ensure the json file is within the same directory as `main.py`.
 - Run `main.py`.
