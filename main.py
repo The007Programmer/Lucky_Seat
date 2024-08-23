@@ -1,10 +1,80 @@
 import json as J
 import random as R
+import tkinter as T
+from tkinter import ttk as TT
+import os as O
+import time as TI
+
+
+def filepath():
+    '''
+    DESC: Creates the JSON file to store data in (if it is not already in the runtime directory)
+    ARGS: NONE
+    RTNS: NONE
+    '''
+    # Get the directory where the script is located
+    script_directory = O.path.dirname(O.path.abspath(__file__))
+
+    # Define the full path for the JSON file in the same directory
+    json_filename = O.path.join(script_directory, 'periods.json')
+
+    # Check if the file already exists
+    if not O.path.exists(json_filename):
+        # Data to write into JSON file on first run
+        data = [
+            {
+                "tables": 0,
+                "per_table": 0
+            },
+            {
+                "tables": 0,
+                "per_table": 0
+            },
+            {
+                "tables": 0,
+                "per_table": 0
+            },
+            {
+                "tables": 0,
+                "per_table": 0
+            },
+            {
+                "tables": 0,
+                "per_table": 0
+            },
+            {
+                "tables": 0,
+                "per_table": 0
+            },
+            {
+                "tables": 0,
+                "per_table": 0
+            }
+        ]
+        # Write the data to the JSON file
+        with open(json_filename, 'w') as json_file:
+            J.dump(data, json_file, indent=4)
+
+        print(f"JSON file '{json_filename}' created in the runtime folder.")
+        
+        # Ensure the file is fully written before proceeding
+        TI.sleep(1)  # Short delay to ensure file is written
+
+    else:
+        print(f"JSON file '{json_filename}' already exists in the runtime folder.")
 
 class LuckySeat:
+    '''
+    doctrsing
+    '''
     
     def __init__(self):
         self.file = 'periods.json'
+
+        # Wait until the JSON file is available
+        while not O.path.exists(self.file):
+            print(f"Waiting for the JSON file '{self.file}' to be available...")
+            TI.sleep(0.1)  # Small delay before retrying
 
         with open(self.file,'r') as jsonfile_init:
             self.periods_dict = J.load(jsonfile_init)
@@ -75,7 +145,11 @@ class LuckySeat:
         self.assert__(self.tables and self.per_table in [1,2,3,4,5,6,7], '\nPlease make sure your period number is between 1 to 7!`\n...Rerunning\n', self.seatNoExists)
 
     def randomlySelect(self):
-        
+        '''
+        DESC: Uses the inputs to create the randomly picked students for each table and returns it.
+        ARGS: NONE
+        RTNS: ~~~
+        '''
         returnlist = []
         tick = 1
         # Period number:tables*4 (all students)
@@ -85,6 +159,8 @@ class LuckySeat:
             returnlist.append(R.randint(tick, tick+(self.per_table-1)))
             tick+=self.per_table
         
+        # global returnlist_i
+        # returnlist_i = iter(returnlist)
         print(f"\n{returnlist}")
 
     def saveConfig(self):
@@ -112,8 +188,6 @@ class LuckySeat:
         except ValueError:
             print("\nPlease enter a valid number.\n...Rerunning\n")
             self.saveConfig()
-
-
         
     def main(self):
 
@@ -128,6 +202,8 @@ class LuckySeat:
             self.randomlySelect()
             self.saveConfig()
 
+
 if __name__ == '__main__':
+    filepath()
     lucky = LuckySeat()
     lucky.main()
