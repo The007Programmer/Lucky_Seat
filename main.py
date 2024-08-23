@@ -5,51 +5,21 @@ from tkinter import ttk as TT
 import os as O
 import time as TI
 
-
 def filepath():
     '''
-    DESC: Creates the JSON file to store data in (if it is not already in the runtime directory)
+    DESC: Creates the JSON file to store data if it does not already exist in the runtime directory.
     ARGS: NONE
-    RTNS: NONE
+    RTNS: str: Path to the JSON file.
     '''
     # Get the directory where the script is located
     script_directory = O.path.dirname(O.path.abspath(__file__))
-
-    # Define the full path for the JSON file in the same directory
     json_filename = O.path.join(script_directory, 'periods.json')
 
     # Check if the file already exists
     if not O.path.exists(json_filename):
         # Data to write into JSON file on first run
         data = [
-            {
-                "tables": 0,
-                "per_table": 0
-            },
-            {
-                "tables": 0,
-                "per_table": 0
-            },
-            {
-                "tables": 0,
-                "per_table": 0
-            },
-            {
-                "tables": 0,
-                "per_table": 0
-            },
-            {
-                "tables": 0,
-                "per_table": 0
-            },
-            {
-                "tables": 0,
-                "per_table": 0
-            },
-            {
-                "tables": 0,
-                "per_table": 0
-            }
+            {"tables": 0, "per_table": 0} for _ in range(7)
         ]
         # Write the data to the JSON file
         with open(json_filename, 'w') as json_file:
@@ -58,25 +28,27 @@ def filepath():
         print(f"JSON file '{json_filename}' created in the runtime folder.")
         
         # Ensure the file is fully written before proceeding
-        TI.sleep(1)  # Short delay to ensure file is written
+        TI.sleep(1)
 
     else:
         print(f"JSON file '{json_filename}' already exists in the runtime folder.")
+    
+    return json_filename
 
 class LuckySeat:
     '''
-    doctrsing
+    A class to manage seating arrangements and configurations.
     '''
     
     def __init__(self):
-        self.file = 'periods.json'
+        self.file = filepath()  # Use filepath function to get the JSON file path
 
         # Wait until the JSON file is available
         while not O.path.exists(self.file):
             print(f"Waiting for the JSON file '{self.file}' to be available...")
-            TI.sleep(0.1)  # Small delay before retrying
+            TI.sleep(0.5)  # Small delay before retrying
 
-        with open(self.file,'r') as jsonfile_init:
+        with open(self.file, 'r') as jsonfile_init:
             self.periods_dict = J.load(jsonfile_init)
 
 
